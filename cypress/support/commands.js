@@ -1,25 +1,36 @@
-// ***********************************************
-// This example commands.js shows you how to
-// create various custom commands and overwrite
-// existing commands.
-//
-// For more comprehensive examples of custom
-// commands please read more here:
-// https://on.cypress.io/custom-commands
-// ***********************************************
-//
-//
-// -- This is a parent command --
-// Cypress.Commands.add('login', (email, password) => { ... })
-//
-//
-// -- This is a child command --
-// Cypress.Commands.add('drag', { prevSubject: 'element'}, (subject, options) => { ... })
-//
-//
-// -- This is a dual command --
-// Cypress.Commands.add('dismiss', { prevSubject: 'optional'}, (subject, options) => { ... })
-//
-//
-// -- This will overwrite an existing command --
-// Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
+Cypress.Commands.add('login', (
+    username = Cypress.env('USER_EMAIL'), 
+    password = Cypress.env('USER_PASSWORD')
+) => {
+    cy.visit('/login')
+
+    cy.get('#email').type(username, {log: false})
+    cy.get('#password').type(password, {log: false})
+    cy.get('button[type="submit"]').click()
+    cy.contains('h1', 'Your Notes').should('be.visible')
+})
+
+Cypress.Commands.add('create', () => {
+	cy.contains('Create a new note').click()
+
+    cy.get('#content').type('My note')
+    cy.contains('Create').click()
+
+    cy.get('.list-group').should('contain', 'My note')
+})
+
+Cypress.Commands.add('edit', () => {
+    cy.get('.list-group').contains('My note').click()
+    cy.get('#content').type(' updated')
+    cy.contains('Save').click()
+
+    cy.get('.list-group').should('contain', 'My note updated')
+    cy.get('.list-group:contains(My note updated)').should('be.visible')
+})
+
+Cypress.Commands.add('delete', () => {
+    cy.get('.list-group').contains('My note updated').click()
+    cy.contains('Delete').click()
+
+    cy.get('.list-group:contains(My note updated)').should('not.exist')
+})

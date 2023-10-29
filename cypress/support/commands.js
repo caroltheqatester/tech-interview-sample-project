@@ -1,14 +1,23 @@
-Cypress.Commands.add('login', (
-    username = Cypress.env('USER_EMAIL'), 
-    password = Cypress.env('USER_PASSWORD')
-) => {
+Cypress.Commands.add('login', () => {
     cy.visit('/login')
 
-    cy.get('#email').type(username, {log: false})
-    cy.get('#password').type(password, {log: false})
+    cy.get('#email').type(Cypress.env('USER_EMAIL'), {log: false})
+    cy.get('#password').type(Cypress.env('USER_PASSWORD'), {log: false})
     cy.get('button[type="submit"]').click()
     cy.contains('h1', 'Your Notes').should('be.visible')
 })
+
+// Cypress.Commands.add('login', (
+//     username = Cypress.env('USER_EMAIL'), 
+//     password = Cypress.env('USER_PASSWORD')
+// ) => {
+//     cy.visit('/login')
+
+//     cy.get('#email').type(username, {log: false})
+//     cy.get('#password').type(password, {log: false})
+//     cy.get('button[type="submit"]').click()
+//     cy.contains('h1', 'Your Notes').should('be.visible')
+// })
 
 Cypress.Commands.add('create', () => {
 	cy.contains('Create a new note').click()
